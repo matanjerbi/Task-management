@@ -27,6 +27,9 @@ data class Task(
     val eventId: Long? = null,
     val ownsEvent: Boolean = true,
     val subtasks: List<SubTask> = emptyList(),
+    val focus: Boolean = false,
+    val inbox: Boolean = false,
+    val focusMinutes: Int = 0,
 ) {
     fun toJson(): JSONObject {
         val o = JSONObject()
@@ -54,6 +57,9 @@ data class Task(
             arr.put(so)
         }
         o.put("subtasks", arr)
+        o.put("focus", focus)
+        o.put("inbox", inbox)
+        o.put("focusMinutes", focusMinutes)
         return o
     }
 
@@ -85,6 +91,9 @@ data class Task(
                 eventId = if (o.has("eventId")) o.getLong("eventId") else null,
                 ownsEvent = o.optBoolean("ownsEvent", true),
                 subtasks = subs,
+                focus = o.optBoolean("focus"),
+                inbox = o.optBoolean("inbox"),
+                focusMinutes = o.optInt("focusMinutes", 0),
             )
         }
     }

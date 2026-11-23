@@ -71,6 +71,7 @@ fun TaskEditor(
     onClose: () -> Unit,
     onSave: (Task) -> Unit,
     onDelete: (Task) -> Unit,
+    onFocus: (Task) -> Unit,
     requestCalendar: () -> Unit,
 ) {
     val ctx = LocalContext.current
@@ -91,7 +92,7 @@ fun TaskEditor(
                         onClick = {
                             val extra = newSub.trim()
                             val subs = if (extra.isNotEmpty()) d.subtasks + SubTask(extra) else d.subtasks
-                            onSave(d.copy(title = d.title.trim(), subtasks = subs))
+                            onSave(d.copy(title = d.title.trim(), subtasks = subs, inbox = d.inbox && d.date == null))
                         },
                         enabled = d.title.isNotBlank(),
                     ) { Text("שמור", fontWeight = FontWeight.Bold) }
@@ -120,6 +121,30 @@ fun TaskEditor(
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                SoftButton(if (d.focus) "⭐ בפוקוס היום" else "☆ לפוקוס היום", Modifier.weight(1f), color = Amber) {
+                    d = d.copy(focus = !d.focus, date = if (!d.focus && d.date == null) today else d.date, inbox = false)
+                }
+                SoftButton("▶ מצב פוקוס", Modifier.weight(1f), color = Violet) {
+                    if (d.title.isNotBlank()) {
+                        val saved = d.copy(title = d.title.trim())
+                        onSave(saved)
+                        onFocus(saved)
+                    }
+                }
+            }
+            GradientButton(
+                "✨ פרק לצעדים קטנים עם Claude",
+                Modifier.fillMaxWidth(),
+                enabled = d.title.isNotBlank() && vm.aiBusy == null,
+            ) {
+                if (!vm.aiEnabled) {
+                    vm.message = "חבר את Claude בהגדרות כדי לפרק משימות"
+                } else {
+                    vm.breakdown(d) { res -> d = d.copy(subtasks = res.subtasks, durationMin = res.durationMin) }
+                }
+            }
 
             FieldLabel("רשימה")
             ChoiceChips(vm.lists.map { it to it }, d.list) { d = d.copy(list = it) }
@@ -150,10 +175,10 @@ fun TaskEditor(
                         },
                     )
                 )
-                if (tm != null) {
-                    FieldLabel("משך")
+                run {
+                    FieldLabel("משך משוער")
                     ChoiceChips(
-                        listOf(15 to "15 דק׳", 30 to "30 דק׳", 60 to "שעה", 90 to "שעה וחצי", 120 to "שעתיים", 180 to "3 שעות"),
+                        listOf(15 to "15 דק׳", 30 to "30 דק׳", 45 to "45 דק׳", 60 to "שעה", 90 to "שעה וחצי", 120 to "שעתיים", 180 to "3 שעות"),
                         d.durationMin,
                     ) { d = d.copy(durationMin = it) }
                 }
