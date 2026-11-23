@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -890,9 +891,9 @@ private fun Quadrant(title: String, sub: String, color: Color, tasks: List<Task>
                             .clickable { vm.toggleDone(t) },
                         contentAlignment = Alignment.Center,
                     ) {
-                        Box(Modifier.size(16.dp).clip(CircleShape).background(color.copy(alpha = 0.25f)))
+                        Box(Modifier.size(16.dp).clip(CircleShape).border(2.dp, color, CircleShape))
                     }
-                    Text(t.title, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(t.title, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         }

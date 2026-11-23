@@ -12,6 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -59,6 +62,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                    ) {
                     App(
                         vm = vm,
                         requestCalendar = {
@@ -68,6 +76,7 @@ class MainActivity : ComponentActivity() {
                         },
                         startVoice = { cb -> startVoice(cb) },
                     )
+                    }
                 }
             }
         }
@@ -92,9 +101,13 @@ fun AppTheme(content: @Composable () -> Unit) {
             onPrimaryContainer = Color(0xFFE0E7FF),
             secondaryContainer = Color(0xFF312E81),
             onSecondaryContainer = Color(0xFFE0E7FF),
-            background = Color(0xFF111118),
-            surface = Color(0xFF16161F),
-            surfaceVariant = Color(0xFF23232F),
+            background = Color(0xFF0F0F17),
+            onBackground = Color(0xFFF1F0FA),
+            surface = Color(0xFF1A1A26),
+            onSurface = Color(0xFFF1F0FA),
+            surfaceVariant = Color(0xFF262636),
+            onSurfaceVariant = Color(0xFFB4B3C7),
+            outlineVariant = Color(0xFF3A3A4E),
         )
     } else {
         lightColorScheme(
@@ -105,8 +118,11 @@ fun AppTheme(content: @Composable () -> Unit) {
             secondaryContainer = Color(0xFFE0E7FF),
             onSecondaryContainer = Color(0xFF1E1B4B),
             background = Color(0xFFF4F3FA),
+            onBackground = Color(0xFF14131F),
             surface = Color.White,
+            onSurface = Color(0xFF14131F),
             surfaceVariant = Color(0xFFEEEEF6),
+            onSurfaceVariant = Color(0xFF5F5E70),
         )
     }
     MaterialTheme(colorScheme = scheme, content = content)
